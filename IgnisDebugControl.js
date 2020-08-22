@@ -1,14 +1,14 @@
 /*:
  * @target MZ
- * @plugindesc Fast boot for development process
+ * @plugindesc Debug control for developing
  * @author Reisen (Mauricio Pastana)
  
- * @help Use F7 to fast boot , this plugin also enables the game to run even when it is not active, only on test mode.
+ * @help Use F7 to fast boot, F6 to switch between active and inactive (only on test mode)
 */
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
-//                      Ignis Fast Boot
+//                      Ignis Debug Control
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 //-----------------------------------------------------------------------------
@@ -22,6 +22,8 @@ SceneManager.onKeyDown = function (event) {
     if (!event.ctrlKey && !event.altKey) {
         if (event.keyCode === 118) {
             this.ignisRebootGame();
+        } else if (event.keyCode === 117) {
+            this.ignisResumePlay = this.ignisResumePlay ? false : true
         }
     }
 };
@@ -31,6 +33,6 @@ SceneManager.ignisRebootGame = function () {
 }
 let _ignisEngine_SceneManager_isGameActive = SceneManager.isGameActive
 SceneManager.isGameActive = function () {
-    if ($gameTemp.isPlaytest()) { return true }
+    if ($gameTemp.isPlaytest()) { return !this.ignisResumePlay }
     _ignisEngine_SceneManager_isGameActive.call(this);
 };
