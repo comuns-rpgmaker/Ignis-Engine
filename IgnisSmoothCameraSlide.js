@@ -26,7 +26,6 @@
     Game_Player.prototype.updateScroll = function (lastScrolledX, lastScrolledY) {
         let x2 = this.scrolledX();
         let y2 = this.scrolledY();
-        console.log(x2);
         if (y2 > this.centerY()) {
             $gameMap.scrollDown((y2 - this.centerY()) / ignisScrollY);
         }
