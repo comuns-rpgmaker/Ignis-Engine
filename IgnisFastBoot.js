@@ -30,5 +30,5 @@ SceneManager.onKeyDown = function (event) {
 };
 
 SceneManager.ignisRebootGame = function () {
-    SceneManager.goto(Scene_Boot);
+    location.reload();
 }
