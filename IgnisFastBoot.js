@@ -1,10 +1,10 @@
 /*:
  * @target MZ
- * @plugindesc Fast boot for plugin  developers
+ * @plugindesc Fast boot for development process
  * @help Use F7 to fast boot
  * @author Reisen (Mauricio Pastana)
  
- * @help IgnisSkipTitle.js
+ * @help Just insert the plugin on the plugin manager
 */
 
 
