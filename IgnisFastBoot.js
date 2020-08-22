@@ -22,7 +22,6 @@ SceneManager.onKeyDown = function (event) {
     console.log(event)
     _ignisEngine_SceneManager_OnKeyDown.call(this, event);
     if (!event.ctrlKey && !event.altKey) {
-        console.log(event.keyCode)
         if (event.keyCode === 118) {
             this.ignisRebootGame();
         }
