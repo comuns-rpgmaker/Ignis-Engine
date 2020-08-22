@@ -13,9 +13,9 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 //-----------------------------------------------------------------------------
-// Scene_Title
+// SceneManager
 //
-// The scene class of the title screen.
+// The scene class of the Manager.
 
 let _ignisEngine_SceneManager_OnKeyDown = SceneManager.onKeyDown
 SceneManager.onKeyDown = function (event) {
