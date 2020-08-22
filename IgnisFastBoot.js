@@ -1,10 +1,9 @@
 /*:
  * @target MZ
  * @plugindesc Fast boot for development process
- * @help Use F7 to fast boot
  * @author Reisen (Mauricio Pastana)
  
- * @help Just insert the plugin on the plugin manager
+ * @help Use F7 to fast boot , just insert the plugin on the plugin manager
 */
 
 
