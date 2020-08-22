@@ -19,7 +19,6 @@
 
 let _ignisEngine_SceneManager_OnKeyDown = SceneManager.onKeyDown
 SceneManager.onKeyDown = function (event) {
-    console.log(event)
     _ignisEngine_SceneManager_OnKeyDown.call(this, event);
     if (!event.ctrlKey && !event.altKey) {
         if (event.keyCode === 118) {
