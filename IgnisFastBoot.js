@@ -3,7 +3,7 @@
  * @plugindesc Fast boot for development process
  * @author Reisen (Mauricio Pastana)
  
- * @help Use F7 to fast boot , just insert the plugin on the plugin manager
+ * @help Use F7 to fast boot , this plugin also enables the game to run even when it is not active, only on test mode.
 */
 
 
@@ -29,3 +29,8 @@ SceneManager.onKeyDown = function (event) {
 SceneManager.ignisRebootGame = function () {
     location.reload();
 }
+let _ignisEngine_SceneManager_isGameActive = SceneManager.isGameActive
+SceneManager.isGameActive = function () {
+    if ($gameTemp.isPlaytest()) { return true }
+    _ignisEngine_SceneManager_isGameActive.call(this);
+};
