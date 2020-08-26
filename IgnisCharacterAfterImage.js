@@ -7,7 +7,7 @@
  * @plugindesc Character Trail/After Image
  * @author Reisen (Mauricio Pastana)
 
-  * @help Ignis Character After Image - 
+  * @help Ignis Character After Image - this plugins is under zlib license
  * For support and new plugins join our discord server! https://discord.gg/Kh9XXZ2
  * Want to support new creations? be a patreon! https://www.patreon.com/raizen884?fan_landing=true
  * Configure the parameters, to disable the actor after image, just create a plugin command redirecting
