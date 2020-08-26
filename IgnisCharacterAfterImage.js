@@ -288,7 +288,7 @@
         _ignisEngineAfterImage_Game_Character_update.call(this, ...arguments)
         if (Graphics.frameCount % this._afterImageFrequency == 0)
             this._afterImageIndex = this._afterImageIndex < this._afterImageMax ? this._afterImageIndex + 1 : 1;
-        if (this.realMoveSpeed() < this._afterImageNeedSpeed) { this._afterImageIndex = 0 };
+        if (this.realMoveSpeed() < this._afterImageNeedSpeed || this.checkStop(0)) { this._afterImageIndex = 0 };
     }
     //=============================================================================
     // getAfterImageIndex - new function
