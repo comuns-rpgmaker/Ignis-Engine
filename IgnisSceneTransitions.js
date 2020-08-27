@@ -11,12 +11,19 @@
  * For support and new plugins join our discord server! https://discord.gg/wsPeqeA
  * Want to support new creations? be a patreon! https://www.patreon.com/raizen884?fan_landing=true
  * 
+ * 
  * The TweenMax lib is under greensock license
  * @TweenMaxlicense Copyright (c) 2008-2019, GreenSock. All rights reserved.
  * This work is subject to the terms at http://greensock.com/standard-license or for
  * Club GreenSock members, the software agreement that was issued with your membership.
  * 
  * TweenMaxauthors: Jack Doyle, jack@greensock.com
+ * 
+ * 
+ * For this plugin, you first need to have a displacement map image on the
+ * img/displacement folder of your project.
+ * After that it is pretty simple, configure on the plugin parameters the displacements
+ * and what scene they occur, it is as simple as that :)
 
 
  * @param DisplacementConfig
