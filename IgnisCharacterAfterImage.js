@@ -1,5 +1,5 @@
 //=============================================================================
-// RPG Maker MZ - Ignis Character After Image
+// RPG Maker MZ - Ignis Battler After Image
 //=============================================================================
 
 /*:
@@ -137,7 +137,7 @@
         const events = $gameMap.events();
         const event = events.find(event => event.eventId() == arg['eventId'])
         event.configureAfterImage(arg['frequency'], arg['shadow number'], arg['needSpeed'])
-        for (var n = 1; n < 15; n++) {
+        for (var n = 1; n < arg['shadow number']; n++) {
             SceneManager._scene._spriteset._characterSprites.push(new Sprite_Character_AfterImage(event, n, parseInt(arg['extra images'])));
             SceneManager._scene._spriteset._characterSprites[SceneManager._scene._spriteset._characterSprites.length - 1].configureAfterImage(arg['fadeSpeed'])
             SceneManager._scene._spriteset._tilemap.addChild(SceneManager._scene._spriteset._characterSprites[SceneManager._scene._spriteset._characterSprites.length - 1]);
