@@ -114,15 +114,6 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 //-----------------------------------------------------------------------------
-// SceneManager
-//
-// The scene class of the Manager.
-//=============================================================================
-// onKeyDown - alias function
-//=============================================================================
-
-
-//-----------------------------------------------------------------------------
 // Scene_Shop
 //
 // The scene class of the shop screen.
@@ -161,6 +152,57 @@
             SceneManager._scene._spriteset._tilemap.removeChild(event);
         }
     });
+    //-----------------------------------------------------------------------------
+    // SceneManager
+    //
+    // The scene class of the Manager.
+    //=============================================================================
+    // onKeyDown - alias function
+    //=============================================================================
+
+    function Game_AfterImages() {
+        this.initialize(...arguments);
+    }
+    Game_AfterImages.prototype.initialize = function () {
+        this._afterImagesStructs = [];
+    }
+    //=============================================================================
+    // hasAfterImageStruct - new function
+    //=============================================================================
+    Game_AfterImages.prototype.hasAfterImageStruct = function () {
+        return this._afterImagesStructs.length > 0;
+    }
+    //=============================================================================
+    // addAfterImageStruct - new function
+    //=============================================================================
+    Game_AfterImages.prototype.addAfterImageStruct = function (struct) {
+        this._afterImagesStructs.push(struct)
+    }
+    //=============================================================================
+    // getAfterImageStruct - new function
+    //=============================================================================
+    Game_AfterImages.prototype.getAfterImageStruct = function () {
+        return this._afterImagesStructs[0];
+    }
+    //=============================================================================
+    // unloadAfterImageStruct - new function
+    //=============================================================================
+    Game_AfterImages.prototype.unloadAfterImageStruct = function () {
+        this._afterImagesStructs.shift()
+    };
+    let $gameAfterImages = new Game_AfterImages();
+    //=============================================================================
+    // terminate - alias function
+    //=============================================================================
+    let _ignisEngineAfterImage_Scene_Map_terminate = Scene_Map.prototype.terminate;
+    Scene_Map.prototype.terminate = function () {
+        const afterImageSprites = this._spriteset._characterSprites.filter(event => event instanceof Sprite_Character_AfterImage && !event.isAPlayer())
+        for (const struct of afterImageSprites) {
+            $gameAfterImages.addAfterImageStruct(struct)
+            this._spriteset._tilemap.removeChild(struct)
+        }
+        _ignisEngineAfterImage_Scene_Map_terminate.call(this, ...arguments);
+    };
     //=============================================================================
     // createCharacters - alias function
     //=============================================================================
@@ -174,11 +216,11 @@
         for (const sprite of this._characterSprites) {
             this._tilemap.addChild(sprite);
         }
-        while ($gameMap.hasAfterImageStruct()) {
-            let struct = $gameMap.getAfterImageStruct()
+        while ($gameAfterImages.hasAfterImageStruct()) {
+            let struct = $gameAfterImages.getAfterImageStruct()
             this._characterSprites.push(struct);
             this._tilemap.addChild(this._characterSprites[this._characterSprites.length - 1]);
-            $gameMap.unloadAfterImageStruct();
+            $gameAfterImages.unloadAfterImageStruct();
         }
     };
 
@@ -295,49 +337,5 @@
     //=============================================================================
     Game_Character.prototype.getAfterImageIndex = function () {
         return this._afterImageIndex;
-    };
-    //=============================================================================
-    // initialize - alias function
-    //=============================================================================
-    let _ignisEngineAfterImage_Game_Map_initialize = Game_Map.prototype.initialize;
-    Game_Map.prototype.initialize = function () {
-        _ignisEngineAfterImage_Game_Map_initialize.call(this, ...arguments)
-        this._afterImagesStructs = [];
-    }
-    //=============================================================================
-    // hasAfterImageStruct - new function
-    //=============================================================================
-    Game_Map.prototype.hasAfterImageStruct = function () {
-        return this._afterImagesStructs.length > 0;
-    }
-    //=============================================================================
-    // addAfterImageStruct - new function
-    //=============================================================================
-    Game_Map.prototype.addAfterImageStruct = function (struct) {
-        this._afterImagesStructs.push(struct)
-    }
-    //=============================================================================
-    // getAfterImageStruct - new function
-    //=============================================================================
-    Game_Map.prototype.getAfterImageStruct = function () {
-        return this._afterImagesStructs[0];
-    }
-    //=============================================================================
-    // unloadAfterImageStruct - new function
-    //=============================================================================
-    Game_Map.prototype.unloadAfterImageStruct = function () {
-        this._afterImagesStructs.shift()
-    }
-    //=============================================================================
-    // terminate - alias function
-    //=============================================================================
-    let _ignisEngineAfterImage_Scene_Map_terminate = Scene_Map.prototype.terminate;
-    Scene_Map.prototype.terminate = function () {
-        const afterImageSprites = this._spriteset._characterSprites.filter(event => event instanceof Sprite_Character_AfterImage && !event.isAPlayer())
-        for (const struct of afterImageSprites) {
-            $gameMap.addAfterImageStruct(struct)
-            this._spriteset._tilemap.removeChild(struct)
-        }
-        _ignisEngineAfterImage_Scene_Map_terminate.call(this, ...arguments);
     };
 })();
