@@ -85,10 +85,15 @@
 * @type number
 * @default 1
 * @desc The type of blend when the picture is hovered.
-* @param commonEventId
+* @param typeOfEvent
+* @type select
+* @option common
+* @option self
+* @desc If the event turned on will be common event or self switch
+* @param id
 * @type number
 * @default 1
-* @desc Id of the Common event to be called when the picture is triggered.
+* @desc Id of the Common event to be called when the picture is triggered, or the id of the event if it is a self switch "A" is default
 * @param triggerType
 * @type select
 * @option press
@@ -122,7 +127,7 @@
 // No touching this part!
 var Ignis = Ignis || {};
 Ignis.TouchPictures = Ignis.TouchPictures || {};
-Ignis.TouchPictures.VERSION = [1, 0, 0];
+Ignis.TouchPictures.VERSION = [1, 0, 1];
 
 
 const pluginName = "IgnisTouchPictures";
@@ -135,11 +140,12 @@ PluginManager.registerCommand(pluginName, "Add Picture Listener", args => {
     Ignis.TouchPictures.PictureListeners[id] = {
         switch: parseInt(arg["switch"]),
         opacity: parseInt(arg["opacity"]),
-        commonEventId: parseInt(arg["commonEventId"]),
+        commonEventId: parseInt(arg["id"]),
         colorTone: arg["colorTone"] == "" ? false : JSON.parse(arg["colorTone"]),
         onlyPixels: arg["onlyPixels"] == "true" ? true : false,
         blendType: parseInt(arg["blendType"]),
-        triggerType: arg["triggerType"]
+        triggerType: arg["triggerType"],
+        typeEvent: arg["typeOfEvent"]
     }
 });
 
@@ -170,19 +176,28 @@ PluginManager.registerCommand(pluginName, "Remove Picture Listener", args => {
             this._updateColorFilter();
         }
         this.blendMode = listener.blendType;
-        console.log(listener.commonEventId)
         switch (listener.triggerType) {
             case "press":
-                if (TouchInput.isPressed()) { $gameMap._interpreter.setup($dataCommonEvents[listener.commonEventId].list) }
+                if (TouchInput.isPressed()) { this.switchType(listener) }
                 break;
             case "trigger":
-                if (TouchInput.isTriggered()) { $gameMap._interpreter.setup($dataCommonEvents[listener.commonEventId].list) }
+                if (TouchInput.isTriggered()) { this.switchType(listener) }
                 break;
             case "repeat":
-                if (TouchInput.isRepeated()) { $gameMap._interpreter.setup($dataCommonEvents[listener.commonEventId].list) }
+                if (TouchInput.isRepeated()) { this.switchType(listener) }
                 break;
         }
     }
+    Sprite_Picture.prototype.switchType = function (listener) {
+        if (listener.typeEvent == "common")
+            $gameMap._interpreter.setup($dataCommonEvents[listener.commonEventId].list)
+        else {
+            const key = [$gameMap.mapId(), listener.commonEventId, "A"];
+            $gameSelfSwitches.setValue(key, true);
+        }
+
+    };
+
     const _Sprite_Picture_update = Sprite_Picture.prototype.update;
     Sprite_Picture.prototype.update = function () {
         _Sprite_Picture_update.call(this, ...arguments);
