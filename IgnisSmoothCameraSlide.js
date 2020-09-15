@@ -30,7 +30,7 @@
 
 
 (() => {
-    let ignisParameters = PluginManager.parameters('IgnisSmoothCamera');
+    let ignisParameters = PluginManager.parameters('IgnisSmoothCameraSlide');
     let ignisScrollX = parseInt(ignisParameters['Scroll X'] || 20);
     let ignisScrollY = parseInt(ignisParameters['Scroll Y'] || 20);
     const ignisSwitch = parseInt(ignisParameters['Switch']);
