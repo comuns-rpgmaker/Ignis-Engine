@@ -5,6 +5,7 @@
 /*:
  * @target MZ
  * @plugindesc Ignis Sound Synchronizer
+ * @url https://www.patreon.com/raizen884
  * @author Reisen (Mauricio Pastana)
  * @help Ignis Sound Synchronizer - this plugins is under zlib license
  * For support and new plugins join our discord server! https://discord.gg/Kh9XXZ2
