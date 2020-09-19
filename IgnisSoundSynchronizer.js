@@ -19,8 +19,10 @@
  * your evented scenes:
  * Just create conditions and use the fourth tab, script for this:
  * 
- *  | Ignis.SoundSynchronizer.CanUpdate
+ *  | Ignis.SoundSynchronizer.SoundLoaded
  *  | returns true if all audio has been loaded and false if not
+ *  | Do remember to turn off the synchronizer, or else the events/graphics will
+ *  | not update until the audio has been loaded.
  * 
  *  | Ignis.SoundSynchronizer.NeedToSynchronizeBGM
  *  | true if BGM synchronization is true
@@ -56,6 +58,7 @@ var Ignis = Ignis || {};
 Ignis.SoundSynchronizer = Ignis.SoundSynchronizer || {};
 Ignis.SoundSynchronizer.VERSION = [1, 0, 0];
 Ignis.SoundSynchronizer.CanUpdate = true;
+Ignis.SoundSynchronizer.SoundLoaded = true;
 Ignis.SoundSynchronizer.NeedToSynchronizeBGM = false;
 Ignis.SoundSynchronizer.NeedToSynchronizeBGS = false;
 (() => {
@@ -81,22 +84,36 @@ Ignis.SoundSynchronizer.NeedToSynchronizeBGS = false;
     };
     const _AudioManager_playBgm = AudioManager.playBgm;
     AudioManager.playBgm = function (bgm, pos) {
+        Ignis.SoundSynchronizer.LoadedNewSong.push(true);
+        Ignis.SoundSynchronizer.SoundLoaded = false;
         if (!this.isCurrentBgm(bgm) && Ignis.SoundSynchronizer.NeedToSynchronizeBGM) {
-            Ignis.SoundSynchronizer.LoadedNewSong.push(true);
             Ignis.SoundSynchronizer.CanUpdate = false;
         };
         _AudioManager_playBgm.call(this, ...arguments);
-        this._bgmBuffer.setAudioType("bgm");
+        if (this._bgmBuffer)
+            this._bgmBuffer.setAudioType("bgm");
+        else {
+            Ignis.SoundSynchronizer.SoundLoaded = true;
+            Ignis.SoundSynchronizer.CanUpdate = true;
+            Ignis.SoundSynchronizer.LoadedNewSong.pop();
+        }
     };
     const _AudioManager_playBgs = AudioManager.playBgs;
 
     AudioManager.playBgs = function (bgs, pos) {
+        Ignis.SoundSynchronizer.LoadedNewSong.push(true);
+        Ignis.SoundSynchronizer.SoundLoaded = false;
         if (!this.isCurrentBgs(bgs) && Ignis.SoundSynchronizer.NeedToSynchronizeBGS) {
-            Ignis.SoundSynchronizer.LoadedNewSong.push(true);
             Ignis.SoundSynchronizer.CanUpdate = false;
         }
         _AudioManager_playBgs.call(this, ...arguments);
-        this._bgsBuffer.setAudioType("bgs");
+        if (this._bgsBuffer)
+            this._bgsBuffer.setAudioType("bgs");
+        else {
+            Ignis.SoundSynchronizer.SoundLoaded = true;
+            Ignis.SoundSynchronizer.CanUpdate = true;
+            Ignis.SoundSynchronizer.LoadedNewSong.pop();
+        }
     };
 
     WebAudio.prototype.setAudioType = function (type) {
@@ -123,12 +140,18 @@ Ignis.SoundSynchronizer.NeedToSynchronizeBGS = false;
         }
     };
     WebAudio.prototype._checkNeedToWait = function () {
-        if ((this._audioTypeBuffer == "bgm" && Ignis.SoundSynchronizer.NeedToSynchronizeBGM) ||
-            (this._audioTypeBuffer == "bgs" && Ignis.SoundSynchronizer.NeedToSynchronizeBGS))
             Ignis.SoundSynchronizer.LoadedNewSong.pop();
-        if (Ignis.SoundSynchronizer.LoadedNewSong.length == 0) {
-            AudioManager.continueAllSound();
-            Ignis.SoundSynchronizer.CanUpdate = true;
+        if (Ignis.SoundSynchronizer.CanUpdate) {
+            this._startAllSourceNodes();
+            this._createEndTimer();
+            if (Ignis.SoundSynchronizer.LoadedNewSong.length == 0)
+                Ignis.SoundSynchronizer.SoundLoaded = true;
+        } else {
+            if (Ignis.SoundSynchronizer.LoadedNewSong.length == 0) {
+                Ignis.SoundSynchronizer.SoundLoaded = true;
+                AudioManager.continueAllSound();
+                Ignis.SoundSynchronizer.CanUpdate = true;
+            }
         }
     }
     WebAudio.prototype.syncronizedPlay = function () {
