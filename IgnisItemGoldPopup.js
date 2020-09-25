@@ -17,6 +17,9 @@
  * 
  * Configure all Ignis.ItemAndGoldPopup.parameters for fontsize and colors for each type of item!
  * You can use Plugin Commands to turn the pop-up on and off.
+ * The plugin is plug n' play, the moment you use the event command to gain item/gold
+ * the pop-up will occur.
+ * 
  * 
  * @param switchPopUp
  * @text Switches the pop-up on or off
@@ -110,12 +113,19 @@
  * @arg switch
  * @type boolean
  * @default true
+ * 
+ * @command customMessage
+ * @text Custom Message
+ * @desc Custom Message for the Pop-up
+ * 
+ * @arg text
+ * @type text
 */
 
 // DON'T MODIFY THIS PART!!!
 var Ignis = Ignis || {};
 Ignis.ItemAndGoldPopup = Ignis.ItemAndGoldPopup || {};
-Ignis.ItemAndGoldPopup.VERSION = [1, 0, 0];
+Ignis.ItemAndGoldPopup.VERSION = [1, 0, 2];
 
 (() => {
 
@@ -136,6 +146,9 @@ Ignis.ItemAndGoldPopup.VERSION = [1, 0, 0];
         Ignis.ItemAndGoldPopup.active = args.switch == "true" ? true : false;
     });
 
+    PluginManager.registerCommand(pluginName, "customMessage", args => {
+        $gameParty.addIgnisCustomPopup(args.text);
+    });
     const _Scene_Map_createDisplayObjects = Scene_Map.prototype.createDisplayObjects;
     Scene_Map.prototype.createDisplayObjects = function () {
         _Scene_Map_createDisplayObjects.call(this, ...arguments);
@@ -199,6 +212,12 @@ Ignis.ItemAndGoldPopup.VERSION = [1, 0, 0];
         if (Ignis.ItemAndGoldPopup.active)
             this._ignisPopUp.push([item, amount]);
     };
+
+    Game_Party.prototype.addIgnisCustomPopup = function (text) {
+        this._ignisPopUp.push([text]);
+    };
+
+
     const _Game_Party_gainGold = Game_Party.prototype.gainGold;
     Game_Party.prototype.gainGold = function (amount) {
         _Game_Party_gainGold.call(this, ...arguments);
@@ -238,7 +257,10 @@ Ignis.ItemAndGoldPopup.VERSION = [1, 0, 0];
         this.contents.fontFace = Ignis.ItemAndGoldPopup.parameters.fontName ? Ignis.ItemAndGoldPopup.parameters.fontName : $gameSystem.mainFontFace();
         this.contents.fontSize = Ignis.ItemAndGoldPopup.parameters.fontSize;
         this.contents.outlineWidth = Ignis.ItemAndGoldPopup.parameters.outlineSize;
-        if (item[0]) {
+        if (item[0] && item.length == 1) {
+            this.changeTextColor(ColorManager.systemColor());
+            this.changeOutlineColor(ColorManager.outlineColor());
+        } else if (item[0]) {
             if (DataManager.isItem(item[0])) {
                 this.changeTextColor("#".concat(Ignis.ItemAndGoldPopup.parameters.fontColorItem));
                 this.changeOutlineColor("#".concat(Ignis.ItemAndGoldPopup.parameters.outlineColorItem));
@@ -261,19 +283,24 @@ Ignis.ItemAndGoldPopup.VERSION = [1, 0, 0];
         const item = $gameParty.firstItemPopUp();
         this.configureFont(item);
         let text;
-        if (item[0]) {
+        let width = ImageManager.iconWidth;
+        if (item[0] && item.length == 1) {
+            text = item[0];
+            width = -4;
+        }
+        else if (item[0]) {
             this.drawIcon(item[0].iconIndex, 0, 0);
             text = "x".concat(item[1]).concat(" ").concat(item[0].name);
         } else {
             this.drawIcon(208, 0, 0);
             text = "x".concat(item[1]).concat(" ").concat("Gold");
         }
-        this.contents.drawText(text, ImageManager.iconWidth + 4, 0, Ignis.ItemAndGoldPopup.parameters.windowWidth - ImageManager.iconWidth - 4 - this.padding * 2 - Ignis.ItemAndGoldPopup.parameters.outlineSize, this.height - 24, "left");
-        this.measureContentsWidth(text);
+        this.contents.drawText(text, width + 4, 0, Ignis.ItemAndGoldPopup.parameters.windowWidth - ImageManager.iconWidth - 4 - this.padding * 2 - Ignis.ItemAndGoldPopup.parameters.outlineSize, this.height - 24, "left");
+        this.measureContentsWidth(width, text);
     };
-    Window_IgnisPopup.prototype.measureContentsWidth = function (text) {
+    Window_IgnisPopup.prototype.measureContentsWidth = function (originalWidth, text) {
         let width = this.contents.measureTextWidth(text);
-        width += ImageManager.iconWidth + 4 + this.padding * 2 + Ignis.ItemAndGoldPopup.parameters.outlineSize;
+        width += originalWidth + 4 + this.padding * 2 + Ignis.ItemAndGoldPopup.parameters.outlineSize;
         if (Ignis.ItemAndGoldPopup.parameters.dynamic)
             this.width = Math.ceil(width);
     };
