@@ -1,13 +1,13 @@
 //==========================================================================
 // Ignis - Text Database
 //----------------------------------------------------------------------------
-// 09/25/20 | Version: 1.0.0
+// 09/25/20 | Version: 1.0.1
 // This software is released under the zlib License.
 //============================================================================
 
 /*:
  * @target MZ
- * @plugindesc Text Database v.1.0.0
+ * @plugindesc Text Database v.1.0.1
  * @author Reisen (Mauricio Pastana)
  * @url https://www.patreon.com/raizen884
 
@@ -74,7 +74,7 @@
 // DON'T MODIFY THIS PART!!!
 var Ignis = Ignis || {};
 Ignis.TextDatabase = Ignis.TextDatabase || {};
-Ignis.TextDatabase.VERSION = [1, 0, 0];
+Ignis.TextDatabase.VERSION = [1, 0, 1];
 Ignis.TextDatabase.dataTextDB = {};
 
 (() => {
@@ -133,7 +133,10 @@ Ignis.TextDatabase.dataTextDB = {};
     }
 
     Ignis.TextDatabase.translateJsonToText = function (exp) {
-        let jsonText = "Ignis.TextDatabase.dataTextDB.".concat(Ignis.TextDatabase.defaultFile);
+        let jsonText = "Ignis.TextDatabase.dataTextDB"
+        if (Ignis.TextDatabase.defaultFile != ""){
+            jsonText = jsonText.concat("." + Ignis.TextDatabase.defaultFile);
+        }
         let expressionArray = exp.split('.');
         for (const expression of expressionArray) {
             jsonText = jsonText.concat("[\"" + expression + "\"]");
@@ -156,6 +159,17 @@ Ignis.TextDatabase.dataTextDB = {};
     Bitmap.prototype.drawText = function (text, x, y, maxWidth, lineHeight, align) {
         text = Ignis.TextDatabase.replaceText(text);
         _Bitmap_drawText.call(this, ...arguments);
+    };
+    /**
+     * Replaces %1, %2 and so on in the string to the arguments.
+     *
+     * @memberof JsExtensions
+     * @param {any} ...args The objects to format.
+     * @returns {string} A formatted string.
+     */
+    String.prototype.format = function () {
+        console.log(arguments)
+        return this.replace(/%([0-9]+)/g, (s, n) => arguments[Number(n) - 1]);
     };
 })();
 
