@@ -201,7 +201,7 @@ PluginManager.registerCommand(pluginName, "Remove Picture Listener", args => {
     const _Sprite_Picture_update = Sprite_Picture.prototype.update;
     Sprite_Picture.prototype.update = function () {
         _Sprite_Picture_update.call(this, ...arguments);
-        if (this._hovered) {
+        if (this._hovered || this._pressed) {
             if (Ignis.TouchPictures.PictureListeners[this._pictureId]) {
                 this.callIgnisListener(this._pictureId)
             }
