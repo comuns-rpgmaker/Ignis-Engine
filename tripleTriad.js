@@ -3298,7 +3298,7 @@ Scene_Album_TT.prototype.addCard = function () {
     this.phase = 1;
     this.remove_specific_item($dataTripleTriad.all_cards, this.index);
     this.add_single_card_image(this._cards_player_1_A, $dataTripleTriad.self_tt_cards.length, parseInt(this.image_list['Cards_Hand_X']) + $dataTripleTriad.self_tt_cards.length * parseInt(this.image_list['Distance']), parseInt(this.image_list['Cards_Hand_Y']), this.index, false);
-    this.card_end_position[0] = 100 + $dataTripleTriad.self_tt_cards.length * parseInt(this.image_list['Distance']);
+    this.card_end_position[0] = parseInt(this.image_list['Cards_Hand_X']) + $dataTripleTriad.self_tt_cards.length * parseInt(this.image_list['Distance']);
     $dataTripleTriad.self_tt_cards.push(this.index);
     this._cardDetailsWindow.refresh(this.index);
     this.triple_triad_frame_count = 0;
