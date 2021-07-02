@@ -1,13 +1,13 @@
 //==========================================================================
 // Ignis - Text Database
 //----------------------------------------------------------------------------
-// 09/25/20 | Version: 1.0.1
+// 01/07/21 | Version: 1.0.2 | Fixed measureTextWidth of Bitmap
 // This software is released under the zlib License.
 //============================================================================
 
 /*:
  * @target MZ
- * @plugindesc Text Database v.1.0.1
+ * @plugindesc Text Database v.1.0.2
  * @author Reisen (Mauricio Pastana)
  * @url https://www.patreon.com/raizen884
 
@@ -74,7 +74,7 @@
 // DON'T MODIFY THIS PART!!!
 var Ignis = Ignis || {};
 Ignis.TextDatabase = Ignis.TextDatabase || {};
-Ignis.TextDatabase.VERSION = [1, 0, 1];
+Ignis.TextDatabase.VERSION = [1, 0, 2];
 Ignis.TextDatabase.dataTextDB = {};
 
 (() => {
@@ -170,5 +170,17 @@ Ignis.TextDatabase.dataTextDB = {};
     String.prototype.format = function () {
         return this.replace(/%([0-9]+)/g, (s, n) => arguments[Number(n) - 1]);
     };
-})();
 
+    /**
+     * Returns the width of the specified text.
+     *
+     * @param {string} text - The text to be measured.
+     * @returns {number} The width of the text in pixels.
+     */
+    const _Bitmap_measureTextWidth = Bitmap.prototype.measureTextWidth;
+    Bitmap.prototype.measureTextWidth = function(text) {
+        text = Ignis.TextDatabase.replaceText(text);
+        return _Bitmap_measureTextWidth.call(this, ...arguments);
+    };
+
+})();
