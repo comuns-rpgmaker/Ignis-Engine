@@ -64,7 +64,7 @@ function frontMember(id) {
 };
 (() => {
 
-    const pluginName = "IgnisFollowerRotation";
+    const pluginName = "IgnisFollowersRotation";
     const parameters = PluginManager.parameters(pluginName);
     Ignis.IgnisFollowersRotation.ButtonUp = parameters.rotateUp;
     Ignis.IgnisFollowersRotation.ButtonDown = parameters.rotateDown;
