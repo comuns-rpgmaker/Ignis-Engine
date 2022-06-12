@@ -1,13 +1,13 @@
 //==========================================================================
 // Ignis - Text Database
 //----------------------------------------------------------------------------
-// 09/25/20 | Version: 1.0.1
+// 09/25/20 | Version: 1.0.0
 // This software is released under the zlib License.
 //============================================================================
 
 /*:
  * @target MZ
- * @plugindesc Text Database v.1.0.1
+ * @plugindesc Text Database v.1.0.0
  * @author Reisen (Mauricio Pastana)
  * @url https://www.patreon.com/raizen884
 
@@ -74,7 +74,7 @@
 // DON'T MODIFY THIS PART!!!
 var Ignis = Ignis || {};
 Ignis.TextDatabase = Ignis.TextDatabase || {};
-Ignis.TextDatabase.VERSION = [1, 0, 1];
+Ignis.TextDatabase.VERSION = [1, 0, 0];
 Ignis.TextDatabase.dataTextDB = {};
 
 (() => {
@@ -87,6 +87,9 @@ Ignis.TextDatabase.dataTextDB = {};
 
     PluginManager.registerCommand(pluginName, "changeFolder", args => {
         Ignis.TextDatabase.defaultFolder = args.folder;
+		for (const language of JSON.parse(parameters.textFiles)) {
+			DataManager.loadLanguageFile(language, language.concat(".json"));
+		}
     });
 
     DataManager.loadLanguageFile = function (name, src) {
@@ -168,6 +171,7 @@ Ignis.TextDatabase.dataTextDB = {};
      * @returns {string} A formatted string.
      */
     String.prototype.format = function () {
+        console.log(arguments)
         return this.replace(/%([0-9]+)/g, (s, n) => arguments[Number(n) - 1]);
     };
 })();
