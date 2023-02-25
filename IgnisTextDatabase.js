@@ -171,7 +171,6 @@ Ignis.TextDatabase.dataTextDB = {};
      * @returns {string} A formatted string.
      */
     String.prototype.format = function () {
-        console.log(arguments)
         return this.replace(/%([0-9]+)/g, (s, n) => arguments[Number(n) - 1]);
     };
 })();
